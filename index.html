@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personality Survey</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .question {
+      margin-bottom: 15px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Personality Survey</h1>
+  <p> Use a 1 (not at all) to 10 (very much) response range to answer each of the following statements. </p>
+
+  <h3>I feel motivated by the need to...</h3>
+  <div id="questions1"></div>
+  <h3>I think that I...</h3>
+  <div id="questions2"></div>
+  <h3>My worldview can be characterized as...</h3>
+  <div id="questions3"></div>
+
+  <button onclick="calculate()">Calculate</button>
+
+
+</div>
+
+
+<script>
+  const questions1 = [
+    "Live life the right way, improve myself and others, and avoid anger.",
+    "Be loved and appreciated and to express my positive feelings toward others.",
+    "Be productive, to achieve success, and to avoid failure.",
+    "Understand my feelings and to be understood, to search for the meaning of life, and to avoid being ordinary.",
+    "Know everything and understand the universe, to be self-sufficient and left alone, and to avoid not having the answer or looking foolish.",
+    "Feel secure and taken care of, or to confront my fears.",
+    "Be happy and plan fun things, to contribute to the world, and to avoid suffering and pain.",
+    "Be self-reliant and strong, to make an impact on the world, and to avoid being weak.",
+    "Keep the peace, merge with others, and avoid conflict."
+  ];
+
+  // Generate the HTML for the second set of questions
+  const questionsDiv1 = document.getElementById('questions1');
+  questions1.forEach((question, index) => {
+    const questionNumber = index+1;
+    const html = `
+      <div class="question">
+        <label for="q${questionNumber}">${question}</label><br>
+        <input type="number" id="q${questionNumber}" min="1" max="10">
+      </div>
+    `;
+    questionsDiv1.insertAdjacentHTML('beforeend', html);
+  });
+
+const questions2 = [
+    "See anger as a character flaw and try to repress it.",
+    "Am interested in people, play the role of nurturer, and try to present a loving image.",
+    "Try to be seen in a good light, according to socially agreed upon norms.",
+    "Have a strong need to express myself and be seen as original.",
+    "Rely on my own resources and find safety in knowledge and/or withdrawing.",
+    "Try to control my fear by being alert and either seeking approval from, or rebelling against, authority figures.",
+    "Am active and optimistic, and I avoid unpleasant emotions, including fear.",
+    "Am powerful and am not afraid to express my anger.",
+    "Am accommodating and often out of touch with my anger."
+  ];
+
+  const questionsDiv2 = document.getElementById('questions2');
+  questions2.forEach((question, index) => {
+    const questionNumber = index+10;
+    const html = `
+      <div class="question">
+        <label for="q${questionNumber}">${question}</label><br>
+        <input type="number" id="q${questionNumber}" min="1" max="10">
+      </div>
+    `;
+    questionsDiv2.insertAdjacentHTML('beforeend', html);
+  });
+
+  const questions3 = [
+    "The world is an imperfect place. I work toward improvement.",
+    "People depend on my help. I am needed.",
+    "The world values a champion. Avoid failures at all costs.", 
+    "Something is missing. Others have it. I have been abandoned.",
+    "The world is invasive. I need privacy to think and to refuel my energies.",
+    "The world is a threatening place. Question authority",
+    "The world is full of opportunity and options. I look forward to the future",
+    "The world is an unjust place. I defend the innocent.", 
+    "My efforts won’t matter. Don’t make waves. Keep the peace."
+  ];
+
+  const questionsDiv3 = document.getElementById('questions3');
+  questions3.forEach((question, index) => {
+    const questionNumber = index+19;
+    const html = `
+      <div class="question">
+        <label for="q${questionNumber}">${question}</label><br>
+        <input type="number" id="q${questionNumber}" min="1" max="10">
+      </div>
+    `;
+    questionsDiv3.insertAdjacentHTML('beforeend', html);
+  });
+
+
+  function calculate() {
+    // Initialize arrays to store responses and totals
+    const responses1 = [];
+    const responses2 = [];
+    const responses3 = [];
+    const totals = [];
+
+    let allQuestionsAnswered = true;
+    let invalidResponse = false;
+
+    for (let i = 1; i <= 27; i++) {
+        const response = parseInt(document.getElementById('q' + i).value);
+
+        if (response < 1 || response > 10){
+          invalidResponse = true;
+          break;
+        }
+
+        if (isNaN(response)) {
+            allQuestionsAnswered = false; 
+            break; 
+        }
+        
+        if (i <= 9) {
+          responses1.push(response);
+        } else if (i <= 18) {
+          responses2.push(response);
+        } else {
+          responses3.push(response)
+        }
+    }
+
+    if (!allQuestionsAnswered) {
+        alert('Please answer all questions before submitting.');
+        return; // Exit function if any question is unanswered
+    }
+
+    if (invalidResponse) {
+        alert('Invalid response. Please enter a number between 1 and 10.');
+        return; // Exit function if any question is unanswered
+    }
+
+    for (var i = 0; i < responses1.length; i++) {
+        totals.push(responses1[i] + responses2[i] + responses3[i]);
+    }
+    console.log(totals)
+
+
+    // Find highest total
+    const maxTotal = Math.max(...totals);
+    const maxIndices = [];
+    for (let i = 0; i < totals.length; i++) {
+        if (totals[i] === maxTotal) {
+            maxIndices.push(i);
+        }
+    }
+
+    // Find corresponding questions
+    const questions = [];
+    maxIndices.forEach(index => {
+      questions.push(questions1[index]);
+      questions.push(questions2[index]);
+      questions.push(questions3[index]);
+    });
+
+
+    const resultScreen = document.createElement('div');
+    resultScreen.style.textAlign = "center"; // Center text
+    resultScreen.style.marginTop = "40vh"; // Center vertically
+    resultScreen.style.transform = "translateY(-50%)"; // Adjust vertical centering
+
+    let resultText = "<h1>Type ";
+    for (let i = 0; i < maxIndices.length; i++) {
+        resultText += (maxIndices[i] + 1);
+        if (i !== maxIndices.length - 1) {
+            resultText += " and ";
+        }
+    }
+    resultText += "</h1>";
+    resultScreen.innerHTML = resultText;
+
+
+    const questionsText = "<br><br><h2>The corresponding statements were:</h2>";
+    resultScreen.innerHTML += questionsText;
+    let questionsList = "<ul style='font-size: 20px;'>";
+    maxIndices.forEach(index => {
+        questionsList += "<li style='margin-bottom: 10px;'>" + questions1[index] + "</li>";
+        questionsList += "<li style='margin-bottom: 10px;'>" + questions2[index] + "</li>";
+        questionsList += "<li style='margin-bottom: 10px;'>" + questions3[index] + "</li>";
+    });
+    questionsList += "</ul>";
+    resultScreen.innerHTML += questionsList;
+
+
+    document.body.innerHTML = ''; // Clear existing content
+    document.body.appendChild(resultScreen);
+  }
+</script>
+
+</body>
+</html>
